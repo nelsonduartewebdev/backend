@@ -1,0 +1,37 @@
+{
+  "name": "padel-tournament-backend",
+  "version": "1.0.0",
+  "description": "Backend services for Padel Tournament Calendar - Manual Management API",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "test": "jest"
+  },
+  "keywords": [
+    "padel",
+    "tournament",
+    "calendar",
+    "api",
+    "management"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "morgan": "^1.10.0",
+    "dotenv": "^16.3.1",
+    "fs-extra": "^11.1.1",
+    "moment": "^2.29.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2",
+    "jest": "^29.7.0",
+    "@types/jest": "^29.5.8"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
