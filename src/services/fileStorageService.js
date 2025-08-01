@@ -14,7 +14,12 @@ function getCountryFileName(country) {
   );
 }
 
-function loadTournamentsFromFile(country) {
+async function loadTournamentsFromFile(country, supabaseWithAuth) {
+  const { data, error } = await supabaseWithAuth
+    .from("tournaments")
+    .select("*")
+    .eq("country", country);
+
   try {
     const filePath = getCountryFileName(country);
 

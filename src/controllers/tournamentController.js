@@ -1,5 +1,8 @@
 import fileStorageService from "../services/fileStorageService.js";
-import { fetchFipTournaments } from "../services/tournamentService.js";
+import {
+  fetchFipTournaments,
+  fetchNationalTournaments,
+} from "../services/tournamentService.js";
 import { createClient } from "@supabase/supabase-js";
 
 const MONTHS_ENG_TO_PT = {
@@ -31,10 +34,44 @@ export const getApiStatus = async (req, res) => {
 };
 
 export const getTournamentsFromFiles = async (req, res) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    return res.status(401).json({ error: "Unauthorized: no token provided" });
+  }
+
+  // Extract token from 'Bearer token...' format
+  const token = authHeader.startsWith("Bearer ")
+    ? authHeader.substring(7)
+    : authHeader;
+
+  const supabaseWithAuth = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_KEY,
+    {
+      global: {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    }
+  );
+
+  console.log("Supabase URL:", process.env.SUPABASE_URL);
+  console.log("Supabase Service Key:", process.env.SUPABASE_SERVICE_KEY);
+  console.log("Country param:", req.params?.country);
+
   try {
     const { country } = req.params;
-    const tournaments = fileStorageService.loadTournamentsFromFile(country);
-    res.json(tournaments);
+    const tournaments = await fetchNationalTournaments(
+      country,
+      supabaseWithAuth
+    );
+    res.status(200).json({
+      success: true,
+      message: "Tournaments fetched successfully",
+      tournaments: tournaments,
+    });
   } catch (error) {
     console.error("Error fetching tournaments:", error);
     res.status(500).json({ error: "Failed to fetch tournaments" });

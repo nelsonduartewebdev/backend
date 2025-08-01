@@ -32,4 +32,8 @@ app.use((req, res, next) => {
   next();
 });
 
+console.log("Supabase URL:", process.env.SUPABASE_URL);
+console.log("Supabase Service Key:", process.env.SUPABASE_SERVICE_KEY);
+console.log("Country param:", req.params?.country);
+
 export default app;
