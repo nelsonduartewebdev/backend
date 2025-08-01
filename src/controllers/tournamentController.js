@@ -1,4 +1,3 @@
-import fileStorageService from "../services/fileStorageService.js";
 import {
   fetchFipTournaments,
   fetchNationalTournaments,
@@ -56,10 +55,6 @@ export const getTournamentsFromFiles = async (req, res) => {
       },
     }
   );
-
-  console.log("Supabase URL:", process.env.SUPABASE_URL);
-  console.log("Supabase Service Key:", process.env.SUPABASE_SERVICE_KEY);
-  console.log("Country param:", req.params?.country);
 
   try {
     const { country } = req.params;
