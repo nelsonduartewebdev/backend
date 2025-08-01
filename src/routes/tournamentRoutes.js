@@ -5,9 +5,8 @@ const router = express.Router();
 
 // load legacy tournaments from files not supabase
 router.get("/data/:country", controller.getTournamentsFromFiles);
-
 // load international fip tournaments from supabase
-router.get("/fip", controller.getInternationalFipTournaments);
+router.get("/international-fips", controller.getInternationalFipTournaments);
 // check api status
 router.get("/status", controller.getApiStatus);
 

@@ -31,26 +31,18 @@ function loadTournamentsFromFile(country) {
             .substr(2, 9)}`,
           name: tournament.name || "Unnamed Tournament",
           federation: tournament.type === "FIP" ? "FIP" : "OTHER",
-          level: tournament.level || "TBD",
-          location: tournament.location || "TBD",
+          month: tournament.month || "-",
+          date: tournament.date,
+          type: tournament.type || "-",
+          division: tournament.division || "-",
+          level: tournament.level || "-",
+          class: tournament.class || "-",
+          prize: tournament.prize || "-",
+          location: tournament.location || "-",
+          partnership: tournament.partnership || "-",
+          organization: tournament.organization || "-",
           country: country,
-          startDate: tournament.startDate
-            ? new Date(tournament.startDate)
-            : new Date(),
-          endDate: tournament.startDate
-            ? new Date(tournament.startDate)
-            : new Date(),
-          status: "upcoming",
-          prizeMoney: tournament.prize || "TBD",
-          currency: "EUR",
-          venue: tournament.partnership || tournament.location || "TBD",
-          surfaces: "TBD",
-          categories: tournament.division
-            ? tournament.division.split("/")
-            : ["Men", "Women"],
-          sourceUrl: `${country}-format`,
-          lastUpdated: new Date(),
-          isOfficial: tournament.fip || false,
+          prizeMoney: tournament.prize || "-",
         }));
       } else if (parsed.tournaments && Array.isArray(parsed.tournaments)) {
         tournaments = parsed.tournaments;
