@@ -1,7 +1,7 @@
 {
   "name": "padel-tournament-backend",
   "version": "1.0.0",
-  "description": "Backend services for Padel Tournament Calendar - Manual Management API",
+  "description": "Backend services for Padel Padel Season - Manual Management API",
   "main": "src/server.js",
   "type": "module",
   "scripts": {
