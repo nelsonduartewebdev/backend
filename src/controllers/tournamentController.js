@@ -32,7 +32,7 @@ export const getApiStatus = async (req, res) => {
   });
 };
 
-export const getTournamentsFromFiles = async (req, res) => {
+export const getTournamentsFromFiles = async (req, res, tournamentCountry) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
@@ -57,9 +57,8 @@ export const getTournamentsFromFiles = async (req, res) => {
   );
 
   try {
-    const { country } = req.query;
     const tournaments = await fetchNationalTournaments(
-      country,
+      tournamentCountry,
       supabaseWithAuth
     );
     res.status(200).json({

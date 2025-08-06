@@ -1,9 +1,6 @@
-import { getTournamentsFromFiles } from "../../../path/to/your/controllers";
+import { getInternationalFipTournaments } from "../../../src/controllers/tournamentController.js";
 
 export default async function handler(req, res) {
-  // Map Vercel query param to match your controller’s expected parameter:
-  req.params = { country: req.query.country };
-
   res.setHeader(
     "Access-Control-Allow-Origin",
     "https://frontend-phi-navy-89.vercel.app"
@@ -20,5 +17,5 @@ export default async function handler(req, res) {
   }
 
   // Now call your controller, which expects (req, res)
-  return getTournamentsFromFiles(req, res);
+  return getInternationalFipTournaments(req, res);
 }
