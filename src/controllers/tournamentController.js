@@ -57,7 +57,7 @@ export const getTournamentsFromFiles = async (req, res) => {
   );
 
   try {
-    const { country } = req.params;
+    const { country } = req.query;
     const tournaments = await fetchNationalTournaments(
       country,
       supabaseWithAuth
