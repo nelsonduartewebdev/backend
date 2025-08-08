@@ -64,7 +64,10 @@ export const getTournamentsFromFiles = async (req, res, tournamentCountry) => {
     res.status(200).json({
       success: true,
       message: "Tournaments fetched successfully",
-      tournaments: tournaments,
+      tournaments: tournaments.map((tournament) => ({
+        ...tournament,
+        level: TOURNAMENT_LEVELS_PARSER[tournament.level] ?? tournament.level,
+      })),
     });
   } catch (error) {
     console.error("Error fetching tournaments:", error);

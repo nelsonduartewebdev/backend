@@ -1,4 +1,4 @@
-import { getInternationalFipTournaments } from "../../../src/controllers/tournamentController.js";
+import { getInternationalFipTournaments } from "../../src/controllers/tournamentController.js";
 
 export default async function handler(req, res) {
   res.setHeader(
