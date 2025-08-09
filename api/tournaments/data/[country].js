@@ -1,7 +1,6 @@
 import { getTournamentsFromFiles } from "../../../src/controllers/tournamentController.js";
 
 export default async function handler(req, res) {
-  console.log("req", req);
   // Map Vercel query param to match your controller's expected parameter:
   const { country } = req.query;
 
