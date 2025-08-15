@@ -3,6 +3,7 @@ import cors from "cors";
 import { errorHandler, notFoundHandler } from "./middlewares/errorHandler.js";
 import tournamentRoutes from "./routes/tournamentRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
+import eventsRoutes from "./routes/eventsRoutes.js";
 const app = express();
 
 const corsOrigins = (process.env.CORS_ORIGINS || "")
@@ -28,6 +29,7 @@ app.options(
 app.use(express.json());
 app.use("/api/tournaments", tournamentRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/events", eventsRoutes);
 
 app.use(errorHandler);
 app.use("*", notFoundHandler);

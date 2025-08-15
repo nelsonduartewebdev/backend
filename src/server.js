@@ -5,6 +5,7 @@ import path from "path";
 import tournamentRoutes from "./routes/tournamentRoutes.js";
 import { errorHandler, notFoundHandler } from "./middlewares/errorHandler.js";
 import adminRoutes from "./routes/adminRoutes.js";
+import eventsRoutes from "./routes/eventsRoutes.js";
 
 // Load environment variables
 import { config } from "dotenv";
@@ -42,6 +43,9 @@ app.use("/api/tournaments/status", tournamentRoutes);
 app.use("/api/admin/validate", adminRoutes);
 app.use("/api/admin/check", adminRoutes);
 
+// Events routes
+app.use("/api/events", eventsRoutes);
+
 // Error handling middleware
 app.use(errorHandler);
 app.use(notFoundHandler);
@@ -56,6 +60,9 @@ app.listen(PORT, () => {
   console.log(`   GET  /api/tournaments/data/:country`);
   console.log(`   GET  /api/tournaments/fip`);
   console.log(`   GET  /api/tournaments/status`);
+  console.log(`📅 Events endpoints:`);
+  console.log(`   GET  /api/events`);
+  console.log(`   GET  /api/events?start_date=...&end_date=...`);
   console.log(`🌐 CORS enabled for: ${corsOrigins.join(", ")}`);
   console.log(`🔒 Admin credentials secured on backend`);
 });

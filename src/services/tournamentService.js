@@ -20,3 +20,15 @@ export const fetchNationalTournaments = async (country, supabaseWithAuth) => {
   }
   return data;
 };
+
+export const fetchUserTournamentSelections = async (supabaseClient, userId) => {
+  const { data, error } = await supabaseClient
+    .from("user_tournament_selections")
+    .select("*")
+    .eq("user_id", userId);
+
+  if (error) {
+    throw error;
+  }
+  return data;
+};

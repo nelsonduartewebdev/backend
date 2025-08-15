@@ -1,6 +1,7 @@
 import {
   fetchFipTournaments,
   fetchNationalTournaments,
+  fetchUserTournamentSelections,
 } from "../services/tournamentService.js";
 import { createClient } from "@supabase/supabase-js";
 
@@ -117,8 +118,54 @@ export const getInternationalFipTournaments = async (req, res) => {
   }
 };
 
+export const getUserTournamentSelections = async (req, res) => {
+  const authHeader = req.headers.authorization;
+
+  if (!authHeader) {
+    return res.status(401).json({ error: "Unauthorized: no token provided" });
+  }
+
+  // Extract token from 'Bearer token...' format
+  const token = authHeader.startsWith("Bearer ")
+    ? authHeader.substring(7)
+    : authHeader;
+
+  const supabaseClient = createClient(
+    process.env.SUPABASE_URL,
+    process.env.SUPABASE_SERVICE_KEY
+  );
+
+  try {
+    // Get user from token
+    const {
+      data: { user },
+      error: authError,
+    } = await supabaseClient.auth.getUser(token);
+
+    if (authError || !user) {
+      return res.status(401).json({ error: "Invalid or expired token" });
+    }
+
+    const tournaments = await fetchUserTournamentSelections(
+      supabaseClient,
+      user.id
+    );
+    res.status(200).json({
+      success: true,
+      message: "User tournament selections fetched successfully",
+      tournaments: tournaments,
+    });
+  } catch (err) {
+    console.error("Error fetching user tournament selections:", err);
+    res
+      .status(500)
+      .json({ error: "Failed to fetch user tournament selections" });
+  }
+};
+
 export default {
   getApiStatus,
   getTournamentsFromFiles,
   getInternationalFipTournaments,
+  getUserTournamentSelections,
 };
