@@ -1,10 +1,7 @@
 import { getInternationalFipTournaments } from "../../src/controllers/tournamentController.js";
 
 export default async function handler(req, res) {
-  res.setHeader(
-    "Access-Control-Allow-Origin",
-    "https://frontend-phi-navy-89.vercel.app"
-  );
+  res.setHeader("Access-Control-Allow-Origin", process.env.ALLOWED_ORIGIN);
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 

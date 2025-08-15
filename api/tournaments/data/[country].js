@@ -4,10 +4,7 @@ export default async function handler(req, res) {
   // Map Vercel query param to match your controller's expected parameter:
   const { country } = req.query;
 
-  res.setHeader(
-    "Access-Control-Allow-Origin",
-    "https://frontend-phi-navy-89.vercel.app"
-  );
+  res.setHeader("Access-Control-Allow-Origin", process.env.ALLOWED_ORIGIN);
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
 
