@@ -1,5 +1,6 @@
 import { EventFilterSchema } from "../schemas/eventSchemas.js";
 import supabase from "../services/supabaseService.js";
+import { createClient } from "@supabase/supabase-js";
 
 // Handle GET requests - fetch events
 export const getEvents = async (req, res, userId) => {
@@ -18,17 +19,42 @@ export const getEvents = async (req, res, userId) => {
     const { start_date, end_date, search, categories, user_id } =
       validation.data;
 
-    // Get authenticated user from Supabase
+    // Extract JWT token from Authorization header
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({
+        success: false,
+        error: "Authorization header missing or invalid",
+        message: "Please provide a valid JWT token in the Authorization header",
+      });
+    }
+
+    const jwt = authHeader.substring(7); // Remove 'Bearer ' prefix
+
+    // Create authenticated Supabase client with JWT
+    const authenticatedSupabase = createClient(
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_ANON_KEY,
+      {
+        global: {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        },
+      }
+    );
+
+    // Get authenticated user from Supabase using JWT
     const {
       data: { user },
       error: authError,
-    } = await supabase.auth.getUser();
+    } = await authenticatedSupabase.auth.getUser(jwt);
 
-    if (authError) {
+    if (authError || !user) {
       return res.status(401).json({
         success: false,
         error: "Authentication failed",
-        message: authError.message,
+        message: authError?.message || "Invalid or expired token",
       });
     }
 
@@ -48,8 +74,8 @@ export const getEvents = async (req, res, userId) => {
       });
     }
 
-    // Build query
-    let query = supabase
+    // Build query using authenticated client
+    let query = authenticatedSupabase
       .from("calendar_events")
       .select("*")
       .eq("user_id", queryUserId)
