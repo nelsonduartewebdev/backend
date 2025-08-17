@@ -16,4 +16,8 @@ router.get(
 // check api status
 router.get("/status", controller.getApiStatus);
 
+// tournament sharing endpoints
+router.post("/share", controller.createSharedTournament);
+router.get("/share/:shareId", controller.getSharedTournament);
+
 export default router;

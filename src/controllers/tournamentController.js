@@ -4,6 +4,7 @@ import {
   fetchUserTournamentSelections,
 } from "../services/tournamentService.js";
 import { createClient } from "@supabase/supabase-js";
+import crypto from "crypto";
 
 const MONTHS_ENG_TO_PT = {
   JANUARY: "JANEIRO",
@@ -163,9 +164,110 @@ export const getUserTournamentSelections = async (req, res) => {
   }
 };
 
+// Shared tournament endpoints for URL shortening
+export const createSharedTournament = async (req, res) => {
+  try {
+    const { tournaments } = req.body;
+
+    if (!tournaments || !Array.isArray(tournaments)) {
+      return res.status(400).json({
+        error: "Invalid request: tournaments array is required",
+      });
+    }
+
+    // Generate a short hash for the shared data
+    const shareId = crypto.randomBytes(8).toString("hex");
+
+    // Create Supabase client
+    const supabaseClient = createClient(
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_KEY
+    );
+
+    // Store the shared tournament data in Supabase
+    const { data, error } = await supabaseClient
+      .from("shared_tournaments")
+      .insert([
+        {
+          share_id: shareId,
+          tournament_data: tournaments,
+          created_at: new Date().toISOString(),
+          expires_at: new Date(
+            Date.now() + 30 * 24 * 60 * 60 * 1000
+          ).toISOString(), // 30 days
+        },
+      ])
+      .select();
+
+    if (error) {
+      console.error("Error storing shared tournament:", error);
+      console.error("Error details:", JSON.stringify(error, null, 2));
+      return res.status(500).json({
+        error: "Failed to create shared tournament",
+        details: error.message || "Database error",
+      });
+    }
+
+    // Return the short URL
+    res.status(201).json({
+      success: true,
+      shareId: shareId,
+      shortUrl: `${req.protocol}://${req.get("host")}/tournaments?s=${shareId}`,
+      expiresAt: data[0].expires_at,
+    });
+  } catch (error) {
+    console.error("Error creating shared tournament:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export const getSharedTournament = async (req, res) => {
+  try {
+    const { shareId } = req.params;
+
+    if (!shareId) {
+      return res.status(400).json({ error: "Share ID is required" });
+    }
+
+    // Create Supabase client
+    const supabaseClient = createClient(
+      process.env.SUPABASE_URL,
+      process.env.SUPABASE_SERVICE_KEY
+    );
+
+    // Retrieve the shared tournament data
+    const { data, error } = await supabaseClient
+      .from("shared_tournaments")
+      .select("*")
+      .eq("share_id", shareId)
+      .gt("expires_at", new Date().toISOString())
+      .single();
+
+    if (error || !data) {
+      console.error("Error retrieving shared tournament:", error);
+      return res.status(404).json({
+        error: "Shared tournament not found or expired",
+        details: error?.message || "Not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      tournaments: data.tournament_data,
+      createdAt: data.created_at,
+      expiresAt: data.expires_at,
+    });
+  } catch (error) {
+    console.error("Error retrieving shared tournament:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
 export default {
   getApiStatus,
   getTournamentsFromFiles,
   getInternationalFipTournaments,
   getUserTournamentSelections,
+  createSharedTournament,
+  getSharedTournament,
 };
