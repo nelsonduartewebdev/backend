@@ -13,6 +13,9 @@ router.get(
   controller.getUserTournamentSelections
 );
 
+// Backward compatibility route
+router.get("/selections", controller.getUserTournamentSelections);
+
 // check api status
 router.get("/status", controller.getApiStatus);
 

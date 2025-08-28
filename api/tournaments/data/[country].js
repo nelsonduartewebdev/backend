@@ -3,6 +3,7 @@ import { getTournamentsFromFiles } from "../../../src/controllers/tournamentCont
 export default async function handler(req, res) {
   // Map Vercel query param to match your controller's expected parameter:
   const { country } = req.query;
+  req.params = { country };
 
   res.setHeader("Access-Control-Allow-Origin", process.env.ALLOWED_ORIGIN);
   res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
@@ -17,5 +18,5 @@ export default async function handler(req, res) {
   }
 
   // Now call your controller, which expects (req, res)
-  return getTournamentsFromFiles(req, res, country);
+  return getTournamentsFromFiles(req, res);
 }

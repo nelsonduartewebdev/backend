@@ -34,8 +34,9 @@ export const getApiStatus = async (req, res) => {
   });
 };
 
-export const getTournamentsFromFiles = async (req, res, tournamentCountry) => {
+export const getTournamentsFromFiles = async (req, res) => {
   const authHeader = req.headers.authorization;
+  const tournamentCountry = req.params.country;
 
   if (!authHeader) {
     return res.status(401).json({ error: "Unauthorized: no token provided" });
